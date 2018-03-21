@@ -1,20 +1,26 @@
 import React, {Component} from 'react';
 import SimplePicker from 'react-native-simple-picker';
 import {Text, TouchableOpacity, View, Keyboard} from "react-native";
-import {Button, FormInput} from 'react-native-elements'
-import Icon from "react-native-elements/src/icons/Icon";
+import {FormInput} from 'react-native-elements'
 
-class CountryPicker extends Component {
+class CommonPicker extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedOption: '',
+            selectedOption: undefined,
+            item: "",
         };
     }
 
-    state = {country: ""};
-
+    updateState(option) {
+        const item = this.props.pickerData.find(element => element.value === option);
+        this.setState({
+            selectedOption: option,
+            item: item
+        });
+        this.props.updateData(item);
+    }
     options = this.props.pickerData.map((item) => item.value);
     labels = this.props.pickerData.map((item) => item.name);
 
@@ -33,10 +39,7 @@ class CountryPicker extends Component {
                                 this.refs.picker.show();
                                 this.selectInput.blur();
                             }}
-                            value={
-                                this.props.pickerData.find(element => element.value === this.state.selectedOption) ?
-                                this.props.pickerData.find(element => element.value === this.state.selectedOption).name : ""
-                            }
+                            value={this.state.item.name}
                         />
                     </View>
                 </TouchableOpacity>
@@ -45,9 +48,7 @@ class CountryPicker extends Component {
                     options={this.options}
                     labels={this.labels}
                     onSubmit={(option) => {
-                        this.setState({
-                            selectedOption: option,
-                        });
+                        this.updateState(option);
                     }}
                 />
             </View>
@@ -55,4 +56,4 @@ class CountryPicker extends Component {
     }
 }
 
-export default CountryPicker
+export default CommonPicker
