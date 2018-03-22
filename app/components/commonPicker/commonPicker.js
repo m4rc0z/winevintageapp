@@ -16,6 +16,7 @@ class CommonPicker extends Component {
 
     clearTextSelect = () => {
         this.setState({selectedOption: undefined, item: ""});
+        this.props.updateData(undefined);
     };
 
     updateState(option) {

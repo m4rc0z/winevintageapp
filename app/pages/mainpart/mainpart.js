@@ -34,16 +34,11 @@ class MainPartComponent extends React.Component {
     };
 
     render() {
-        const regionPicker = this.state.country ?
-            (<CommonPicker placeholder={"Region auswählen"} pickerData={this.regions} updateData={this.updateRegion}/>) : null;
-
-        const rating = this.state.region ?
-            (<RatingComponent ratingValue={this.state.region.rating}/>) : null;
-
-        return(<View>
+        return(
+            <View>
                 <CommonPicker placeholder={"Land auswählen"} pickerData={this.countries} updateData={this.updateCountry}/>
-                {regionPicker}
-                {rating}
+                {this.state.country && <CommonPicker placeholder={"Region auswählen"} pickerData={this.regions} updateData={this.updateRegion}/>}
+                {this.state.country && this.state.region && <RatingComponent ratingValue={this.state.region.rating}/>}
             </View>);
     }
 }
