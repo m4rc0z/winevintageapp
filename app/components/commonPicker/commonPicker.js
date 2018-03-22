@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import SimplePicker from 'react-native-simple-picker';
 import {Text, TouchableOpacity, View, Keyboard} from "react-native";
-import {FormInput} from 'react-native-elements'
+import {FormInput, Icon} from 'react-native-elements'
+import styled from "styled-components";
 
 class CommonPicker extends Component {
 
@@ -12,6 +13,10 @@ class CommonPicker extends Component {
             item: "",
         };
     }
+
+    clearTextSelect = () => {
+        this.setState({selectedOption: undefined, item: ""});
+    };
 
     updateState(option) {
         const item = this.props.pickerData.find(element => element.value === option);
@@ -25,15 +30,20 @@ class CommonPicker extends Component {
     labels = this.props.pickerData.map((item) => item.name);
 
     render() {
+        const icon = this.state.item ?
+            (<IconContainer>
+                <Icon name={'close'} size={20} onPress={() => {this.clearTextSelect()}}/>
+            </IconContainer>) : null;
+
         return (
             <View>
-                <TouchableOpacity>
-                    <View>
+                <PickerContainer>
+                    <InputContainer>
                         <FormInput
                             ref={(ref) => { this.selectInput = ref; }}
                             editable={true}
                             placeholder={this.props.placeholder}
-                            clearButtonMode="always"
+                            clearButtonMode="never"
                             onFocus={() => {
                                 Keyboard.dismiss();
                                 this.refs.picker.show();
@@ -41,10 +51,12 @@ class CommonPicker extends Component {
                             }}
                             value={this.state.item.name}
                         />
-                    </View>
-                </TouchableOpacity>
+                    </InputContainer>
+                    {icon}
+                </PickerContainer>
                 <SimplePicker
                     ref={'picker'}
+                    supportedOrientations={['portrait', 'landscape']}
                     options={this.options}
                     labels={this.labels}
                     onSubmit={(option) => {
@@ -56,4 +68,20 @@ class CommonPicker extends Component {
     }
 }
 
+const PickerContainer = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: row;
+`;
+const IconContainer = styled.TouchableHighlight`
+    display: flex;
+    justify-content: center;
+    flex:none
+    margin-left: -62;
+    margin-right: 12;
+    width: 50;
+`;
+
+const InputContainer = styled.View`
+    flex: 1;
+`;
 export default CommonPicker
