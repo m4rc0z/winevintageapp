@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import HeaderComponent from "./components/header/header";
+import HeaderComponent from "./pages/header/header";
 import styled from "styled-components";
-import MainPartComponent from "./components/mainpart/mainpart";
+import MainPartComponent from "./pages/mainpart/mainpart";
 
 const TextContainer = styled.View`
     flex: 1;

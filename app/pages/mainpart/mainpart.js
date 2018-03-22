@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, View, Picker, Text} from "react-native";
-import CommonPicker from "../commonPicker/commonPicker";
-import RatingComponent from "../ratingComponent/ratingComponent";
+import CommonPicker from "../../components/commonPicker/commonPicker";
+import RatingComponent from "../../components/ratingComponent/ratingComponent";
 
 class MainPartComponent extends React.Component {
     constructor() {
