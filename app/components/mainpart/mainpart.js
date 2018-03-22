@@ -1,6 +1,7 @@
 import React from 'react';
 import {ScrollView, View, Picker, Text} from "react-native";
 import CommonPicker from "../commonPicker/commonPicker";
+import RatingComponent from "../ratingComponent/ratingComponent";
 
 class MainPartComponent extends React.Component {
     constructor() {
@@ -17,14 +18,13 @@ class MainPartComponent extends React.Component {
     ];
 
     regions = [
-        {name: "Piemont", value: 0},
-        {name: "Rioja", value: 1}
+        {name: "Piemont", value: 0, rating: 5},
+        {name: "Rioja", value: 1, rating: 4}
     ];
 
     updateCountry = (country) => {
-        console.log(country);
         this.setState({
-            item: country
+            country: country
         });
     };
     updateRegion = (region) => {
@@ -34,12 +34,16 @@ class MainPartComponent extends React.Component {
     };
 
     render() {
-        const regionPicker = this.state.item ?
+        const regionPicker = this.state.country ?
             (<CommonPicker placeholder={"Region auswählen"} pickerData={this.regions} updateData={this.updateRegion}/>) : null;
+
+        const rating = this.state.region ?
+            (<RatingComponent ratingValue={this.state.region.rating}/>) : null;
 
         return(<View>
                 <CommonPicker placeholder={"Land auswählen"} pickerData={this.countries} updateData={this.updateCountry}/>
                 {regionPicker}
+                {rating}
             </View>);
     }
 }
