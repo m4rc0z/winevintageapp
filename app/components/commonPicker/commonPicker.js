@@ -5,30 +5,51 @@ import {FormInput, Icon} from 'react-native-elements'
 import styled from "styled-components";
 
 class CommonPicker extends Component {
-
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getInitState();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.pickerData !== nextProps.pickerData) {
+            this.setState({
+                options: this.getOptions(nextProps),
+                labels: this.getLabels(nextProps),
+                pickerData: nextProps && nextProps.pickerData
+            });
+        }
+    }
+
+    getInitState(){
+        return {
             selectedOption: undefined,
             item: "",
+            options: this.getOptions(this.props),
+            labels: this.getLabels(this.props),
+            pickerData: this.props.pickerData
         };
     }
 
+    getOptions(props) {
+        return props.pickerData && props.pickerData.map((item, index) => (index));
+    }
+
+    getLabels(props) {
+        return props.pickerData && props.pickerData.map((item) => item.name);
+    }
     clearTextSelect = () => {
-        this.setState({selectedOption: undefined, item: ""});
+        this.setState(this.getInitState());
         this.props.updateData(undefined);
     };
 
     updateState(option) {
-        const item = this.props.pickerData.find(element => element.value === option);
+        const item = this.state.pickerData[option];
         this.setState({
             selectedOption: option,
             item: item
         });
         this.props.updateData(item);
     }
-    options = this.props.pickerData.map((item) => item.value);
-    labels = this.props.pickerData.map((item) => item.name);
 
     render() {
         const icon = this.state.item ?
@@ -55,15 +76,15 @@ class CommonPicker extends Component {
                     </InputContainer>
                     {icon}
                 </PickerContainer>
-                <SimplePicker
+                {this.state.options && <SimplePicker
                     ref={'picker'}
                     supportedOrientations={['portrait', 'landscape']}
-                    options={this.options}
-                    labels={this.labels}
+                    options={this.state.options}
+                    labels={this.state.labels}
                     onSubmit={(option) => {
                         this.updateState(option);
                     }}
-                />
+                />}
             </View>
         )
     }
