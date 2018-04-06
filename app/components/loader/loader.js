@@ -16,16 +16,12 @@ export default class Loader extends React.Component {
             loadingProgress: new Animated.Value(0),
             animationDone: false,
         };
+        this.animatedValue1 = new Animated.Value(0);
+        this.animatedValue2 = new Animated.Value(1);
     }
     static defaultProps = {
         isLoaded: false,
     };
-
-
-    componentWillMount() {
-        this.animatedValue1 = new Animated.Value(0);
-        this.animatedValue2 = new Animated.Value(1);
-    }
 
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps.isLoaded !== this.props.isLoaded) {
