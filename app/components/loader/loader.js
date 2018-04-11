@@ -65,7 +65,7 @@ export default class Loader extends React.Component {
                 )
                     .start()
             ])
-        }, 0)
+        }, 10)
     }
 
     render() {
