@@ -38,32 +38,34 @@ export default class Loader extends React.Component {
     }
 
     componentDidMount() {
-        Animated.sequence([
-            Animated.parallel(
-                [
-                    Animated.timing(this.animatedValue1, {
-                        duration: 3000,
-                    }),
-                    Animated.spring(this.animatedValue2, {
-                        toValue: 3,
-                    }),
-                    Animated.timing(this.animatedValue1, {
-                        duration: 3000,
-                    }),
-                    Animated.spring(this.animatedValue2, {
-                        toValue: 0.5,
-                    }),
-                    Animated.timing(this.animatedValue1, {
-                        duration: 3000,
-                    }),
-                    Animated.spring(this.animatedValue1, {
-                        toValue: -250,
-                    })
+        setTimeout(() => {
+            Animated.sequence([
+                Animated.parallel(
+                    [
+                        Animated.timing(this.animatedValue1, {
+                            duration: 3000,
+                        }),
+                        Animated.spring(this.animatedValue2, {
+                            toValue: 3,
+                        }),
+                        Animated.timing(this.animatedValue1, {
+                            duration: 3000,
+                        }),
+                        Animated.spring(this.animatedValue2, {
+                            toValue: 0.5,
+                        }),
+                        Animated.timing(this.animatedValue1, {
+                            duration: 3000,
+                        }),
+                        Animated.spring(this.animatedValue1, {
+                            toValue: -250,
+                        })
 
-                ]
-            )
-            .start()
-        ])
+                    ]
+                )
+                    .start()
+            ])
+        }, 0)
     }
 
     render() {
