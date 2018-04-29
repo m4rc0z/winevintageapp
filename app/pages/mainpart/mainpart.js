@@ -40,22 +40,48 @@ class MainPartComponent extends React.Component {
     render() {
         let renderYearRatingContainer = this.state.region && this.state.region.years.map(year => {
             return (
-                <View key={year.year}>
-                    {this.state.country && this.state.region && <YearContainer>{year.year}</YearContainer>}
-                    {this.state.country && this.state.region && <RatingComponent ratingvalue={year.rating}/>}
-                </View>
+                <YearRatingContainer key={year.year}>
+                    {this.state.country && this.state.region && <YearContainer><Text>{year.year}</Text></YearContainer>}
+                    {this.state.country && this.state.region && <RatingContainer><RatingComponent ratingvalue={year.rating}/></RatingContainer>}
+                </YearRatingContainer>
             );
         });
 
         return(
             <View>
-                <CommonPicker placeholder={"Land auswählen"} pickerData={this.state.countriesArray} updateData={this.updateCountry}/>
-                {this.state.country && <CommonPicker ref={instance => { this.regionPicker = instance; }} placeholder={"Region auswählen"} pickerData={this.state.regions} updateData={this.updateRegion}/>}
-                {renderYearRatingContainer}
-            </View>);
+                <View>
+                    <CommonPicker placeholder={"Land auswählen"}
+                                  pickerData={this.state.countriesArray}
+                                  updateData={this.updateCountry}
+                    />
+                    {this.state.country &&
+                    <CommonPicker ref={instance => {this.regionPicker = instance;}}
+                                  placeholder={"Region auswählen"}
+                                  pickerData={this.state.regions}
+                                  updateData={this.updateRegion}
+                    />}
+                    <ScrollViewContainer>{renderYearRatingContainer}</ScrollViewContainer>
+                </View>
+            </View>
+        );
     }
 }
 
-const YearContainer = styled.Text`
+const YearContainer = styled.View`
+  flex: 1;
+  align-items: center;
 `;
+
+const RatingContainer = styled.View`
+  flex: 1
+`;
+const YearRatingContainer = styled.View`
+  margin-top: 10px;
+  flex-direction: row;
+`;
+
+const ScrollViewContainer = styled.ScrollView`
+  flex-basis: 75%;
+`;
+
 export default MainPartComponent;

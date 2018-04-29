@@ -31,7 +31,7 @@ class RatingComponent extends React.Component {
                     ref={(ref) => {this.ratingElement = ref}}
                     imageSize={20}
                     readonly
-                    startingValue={this.state.rating}
+                    startingValue={Number(this.state.rating)}
                 />
             </View>
         )

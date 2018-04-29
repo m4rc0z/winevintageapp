@@ -98,13 +98,14 @@ const PickerContainer = styled.TouchableOpacity`
     display: flex;
     flex-direction: row;
 `;
+
 const IconContainer = styled.TouchableHighlight`
     display: flex;
     justify-content: center;
     flex:none;
-    margin-left: -80; //TODO: fix this ugly styling
+    margin-left: -80; 
     width: 50;
-`;
+`; //TODO: fix this ugly styling
 
 const InputContainer = styled.TouchableWithoutFeedback`
     flex: 1;
