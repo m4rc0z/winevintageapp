@@ -1,6 +1,6 @@
 import {Icon, List, ListItem, SearchBar} from 'react-native-elements';
 import React from 'react';
-import {View, StyleSheet, Text, Alert} from "react-native";
+import {View, StyleSheet, Text, Alert, TouchableWithoutFeedback, Keyboard} from "react-native";
 import styled from "styled-components";
 import CountryService from "../../services/api/countryService";
 
@@ -44,36 +44,44 @@ class SearchComponent extends React.Component {
     render() {
         return (
             this.state.isOpen ? (
-                <View>
-                    <SearchBarContainer>
-                        <SearchBar
-                            clearIcon
-                            containerStyle={styles.searchBar}
-                            inputStyle={styles.searchInput}
-                            onChangeText={(text) => this.changeText(text)}
-                            onClear={this.clearText()}
-                            value={this.state.searchValue}
-                            placeholder='Type Here...' />
-                    </SearchBarContainer>
-                    <SearchResultContainer>
-                        <List containerStyle={{marginBottom: 20}}>
-                            {
-                                this.state.content && this.state.content.map((l, i) => (
-                                    <ListItem
-                                        key={i}
-                                        title={(l && l.name)}
-                                        rightIcon={<DummyRightElement></DummyRightElement>}
-                                        onPress={() => Alert.alert(`${l.name} clicked`)}
-                                    />
-                                ))
-                            }
-                        </List>
-                    </SearchResultContainer>
-                </View>
+                <DismissKeyboard>
+                    <View>
+                        <SearchBarContainer>
+                            <SearchBar
+                                clearIcon
+                                containerStyle={styles.searchBar}
+                                inputStyle={styles.searchInput}
+                                onChangeText={(text) => this.changeText(text)}
+                                onClear={this.clearText()}
+                                value={this.state.searchValue}
+                                placeholder='Type Here...' />
+                        </SearchBarContainer>
+                        <SearchResultContainer>
+                            <List containerStyle={{marginBottom: 20}}>
+                                {
+                                    this.state.content && this.state.content.map((l, i) => (
+                                        <ListItem
+                                            key={i}
+                                            title={(l && l.name)}
+                                            rightIcon={<DummyRightElement></DummyRightElement>}
+                                            onPress={() => Alert.alert(`${l.name} clicked`)}
+                                        />
+                                    ))
+                                }
+                            </List>
+                        </SearchResultContainer>
+                    </View>
+                </DismissKeyboard>
             ) : <SearchIconContainer><Icon name="search" onPress={() => this.openSearchBar()}/></SearchIconContainer>
         )
     }
 }
+
+const DismissKeyboard = ({children}) => (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        {children}
+    </TouchableWithoutFeedback>
+);
 
 const styles = StyleSheet.create({
     searchBar: {
