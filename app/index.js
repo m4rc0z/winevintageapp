@@ -1,44 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import HeaderComponent from "./pages/header/header";
-import styled from "styled-components";
 import MainPartComponent from "./pages/mainpart/mainpart";
 import Loader from "./components/loader/loader";
+import {createStackNavigator} from 'react-navigation';
 
-const TextContainer = styled.View`
-    flex: 1;
-`;
-
-export default class App extends React.Component {
-
-    constructor() {
-        super();
-        this.state = {
-            appReady: false,
-        };
+const App = createStackNavigator({
+    SplashScreen: { screen: Loader },
+    MainNavigator: { screen: MainPartComponent }
+}, {
+    headerMode: 'screen',
+    navigationOptions: {
+        header: <HeaderComponent/>
     }
+});
 
-    componentDidMount(){
-        setTimeout(() => {
-            this.setState({
-                appReady: true,
-            });
-        }, 1000);
-    }
-
-    render() {
-    return (
-        <View>
-            <Loader
-                isLoaded={this.state.appReady}
-            >
-                    <HeaderComponent />
-                    <MainPartComponent />
-                    <TextContainer>
-                        <Text></Text>
-                    </TextContainer>
-            </Loader>
-        </View>
-    );
-  }
-}
+export default App;

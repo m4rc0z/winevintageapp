@@ -7,35 +7,33 @@ import {
     MaskedViewIOS, Text, Image,
 } from 'react-native';
 import styled from "styled-components";
+import {StackActions, NavigationActions} from "react-navigation";
 
 export default class Loader extends React.Component {
-
+    static navigationOptions = {
+        header: null,
+    };
     constructor(props) {
         super(props);
-        this.state = state = {
+        this.state = {
             loadingProgress: new Animated.Value(0),
             animationDone: false,
         };
         this.animatedValue1 = new Animated.Value(0);
         this.animatedValue2 = new Animated.Value(1);
     }
+
+    _navigateTo = (routeName: string) => {
+        const actionToDispatch = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName })]
+        });
+        this.props.navigation.dispatch(actionToDispatch);
+    };
+
     static defaultProps = {
         isLoaded: false,
     };
-
-    componentWillReceiveProps(nextProps: Props) {
-        if (nextProps.isLoaded !== this.props.isLoaded) {
-            Animated.timing(this.state.loadingProgress, {
-                toValue: 100,
-                duration: 1000,
-                useNativeDriver: true,
-            }).start(() => {
-                this.setState({
-                    animationDone: true,
-                });
-            });
-        }
-    }
 
     componentDidMount() {
         setTimeout(() => {
@@ -65,7 +63,19 @@ export default class Loader extends React.Component {
                 )
                     .start()
             ])
-        }, 10)
+        }, 10);
+        setTimeout(() => {
+            Animated.timing(this.state.loadingProgress, {
+                toValue: 100,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start(() => {
+                this.setState({
+                    animationDone: true,
+                });
+                this._navigateTo('MainNavigator');
+            });
+        }, 500)
     }
 
     render() {
