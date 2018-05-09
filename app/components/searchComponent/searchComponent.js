@@ -1,12 +1,17 @@
-import {Icon, List, ListItem, SearchBar} from 'react-native-elements';
+import {ListItem, SearchBar} from 'react-native-elements';
 import React from 'react';
 import {View, StyleSheet, Text, Alert, TouchableWithoutFeedback, Keyboard} from "react-native";
 import styled from "styled-components";
 import CountryService from "../../services/api/countryService";
+import NavigationService from "../../services/navigation/NavigationService";
+
+Array.prototype.flatMap = function(lambda) {
+    return Array.prototype.concat.apply([], this.map(lambda));
+};
 
 class SearchComponent extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isOpen: false,
             searchValue: undefined,
@@ -19,31 +24,29 @@ class SearchComponent extends React.Component {
         this.setState({countriesArray: await CountryService.getCountries()});
     }
 
-    openSearchBar() {
-        if(!this.state.isOpen) {
-            this.setState({
-                isOpen: true,
-                searchValue: undefined,
-                content: undefined,
-            });
-        }
-    }
-
     changeText(text) {
+        const searchResult = text == '' ?
+            undefined
+            : this.state.countriesArray.flatMap(country => country.regions.filter(region => region.name.includes(text)));
         this.setState({
-            content: this.state.countriesArray.map(country => country.regions.find(region => region.name.includes(text)))
+                content: searchResult
             }
         );
-
     }
 
     clearText() {
         console.log('clear')
     }
 
+    setRegionAndNavigate(region) {
+        NavigationService.navigate('Home', {
+            country: this.state.countriesArray.find(country => country.regions.find(regionPar => regionPar == region)),
+            region: region,
+        });
+    }
+
     render() {
         return (
-            this.state.isOpen ? (
                 <DismissKeyboard>
                     <View>
                         <SearchBarContainer>
@@ -57,22 +60,21 @@ class SearchComponent extends React.Component {
                                 placeholder='Type Here...' />
                         </SearchBarContainer>
                         <SearchResultContainer>
-                            <List containerStyle={{marginBottom: 20}}>
                                 {
-                                    this.state.content && this.state.content.map((l, i) => (
-                                        <ListItem
-                                            key={i}
-                                            title={(l && l.name)}
-                                            rightIcon={<DummyRightElement></DummyRightElement>}
-                                            onPress={() => Alert.alert(`${l.name} clicked`)}
-                                        />
-                                    ))
+                                    this.state.content && this.state.content.map((l, i) =>
+                                        l ?
+                                            (<ListItem
+                                                key={i}
+                                                title={(l && l.name)}
+                                                rightIcon={<DummyRightElement></DummyRightElement>}
+                                                onPress={() => this.setRegionAndNavigate(l)}
+                                            />)
+                                            : null)
                                 }
-                            </List>
                         </SearchResultContainer>
                     </View>
                 </DismissKeyboard>
-            ) : <SearchIconContainer><Icon name="search" onPress={() => this.openSearchBar()}/></SearchIconContainer>
+
         )
     }
 }
@@ -96,12 +98,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const SearchIconContainer = styled.View`
-  height: 40px;
-  width: 100%;
-`;
 const SearchBarContainer = styled.View`
-  height: 40px;
   width: 100%;
 `;
 const SearchResultContainer = styled.View`
