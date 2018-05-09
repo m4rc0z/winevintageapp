@@ -18,12 +18,17 @@ class CommonPicker extends Component {
                 pickerData: nextProps && nextProps.pickerData
             });
         }
+        if (this.props.item !== nextProps.item) {
+            this.setState({
+                item: nextProps && nextProps.item
+            });
+        }
     }
 
     getInitState(){
         return {
             selectedOption: undefined,
-            item: "",
+            item: this.props.item || "",
             options: this.getOptions(this.props),
             labels: this.getLabels(this.props),
             pickerData: this.props.pickerData
@@ -73,7 +78,7 @@ class CommonPicker extends Component {
                                     editable={true}
                                     placeholder={this.props.placeholder}
                                     clearButtonMode="never"
-                                    value={this.state.item.name}
+                                    value={this.state.item && this.state.item.name}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
