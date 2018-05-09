@@ -6,12 +6,15 @@ import CountryService from "../../services/api/countryService";
 import styled from "styled-components";
 
 class MainPartComponent extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        const { params } = this.props.navigation.state;
+        const region = params ? params.region : undefined;
+        const country = params ? params.country : undefined;
         this.state = {
-            country: undefined,
+            country: country,
             countriesArray: undefined,
-            region: undefined,
+            region: region,
             regions: undefined
         };
         this.initCountries();
@@ -53,12 +56,14 @@ class MainPartComponent extends React.Component {
                     <CommonPicker placeholder={"Land auswählen"}
                                   pickerData={this.state.countriesArray}
                                   updateData={this.updateCountry}
+                                  item={this.state.country}
                     />
                     {this.state.country &&
                     <CommonPicker ref={instance => {this.regionPicker = instance;}}
                                   placeholder={"Region auswählen"}
                                   pickerData={this.state.regions}
                                   updateData={this.updateRegion}
+                                  item={this.state.region}
                     />}
                     <ScrollViewContainer>{renderYearRatingContainer}</ScrollViewContainer>
                 </View>
