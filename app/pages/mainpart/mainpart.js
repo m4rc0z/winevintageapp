@@ -38,7 +38,7 @@ class MainPartComponent extends React.Component {
         if (this.state.selectedCountry !== (nextProps.selectedCountryState && nextProps.selectedCountryState.selectedCountry)) {
             this.setState({
                 selectedCountry: nextProps.selectedCountryState.selectedCountry,
-                regions: nextProps.selectedCountryState.selectedCountry.regions,
+                regions: nextProps.selectedCountryState.selectedCountry && nextProps.selectedCountryState.selectedCountry.regions,
             });
         }
 
