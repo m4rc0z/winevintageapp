@@ -6,6 +6,8 @@ import Loader from "./components/loader/loader";
 import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
 import SearchComponent from "./components/searchComponent/searchComponent";
 import NavigationService from "./services/navigation/NavigationService";
+import store from "./store";
+import {Provider} from "react-redux";
 
 const TopLevelNavigator = createStackNavigator({
     SplashScreen: { screen: Loader },
@@ -25,12 +27,15 @@ const TopLevelNavigator = createStackNavigator({
 class App extends React.Component {
     render() {
         return (
-            <TopLevelNavigator
-                ref={navigatorRef => {
-                    NavigationService.setTopLevelNavigator(navigatorRef)
-                }}/>
+            <Provider store={store}>
+                <TopLevelNavigator
+                    ref={navigatorRef => {
+                        NavigationService.setTopLevelNavigator(navigatorRef)
+                    }}/>
+            </Provider>
         )
     };
 }
+
 
 export default App;
