@@ -1,9 +1,9 @@
 import {ListItem, SearchBar} from 'react-native-elements';
 import React from 'react';
-import {View, StyleSheet, Text, Alert, TouchableWithoutFeedback, Keyboard} from "react-native";
+import {Alert, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import styled from "styled-components";
-import CountryService from "../../services/api/countryService";
 import NavigationService from "../../services/navigation/NavigationService";
+import {connect} from "react-redux";
 
 Array.prototype.flatMap = function(lambda) {
     return Array.prototype.concat.apply([], this.map(lambda));
@@ -17,17 +17,16 @@ class SearchComponent extends React.Component {
             searchValue: undefined,
             content: undefined,
         };
-        this.initCountries();
     }
 
-    async initCountries() {
-        this.setState({countriesArray: await CountryService.getCountries()});
+    componentDidMount() {
+        this.setState({countries: this.props.countryState.countries});
     }
 
     changeText(text) {
         const searchResult = text == '' ?
             undefined
-            : this.state.countriesArray.flatMap(country => country.regions.filter(region => region.name.includes(text)));
+            : this.state.countries.flatMap(country => country.regions.filter(region => region.name.includes(text)));
         this.setState({
                 content: searchResult
             }
@@ -40,7 +39,7 @@ class SearchComponent extends React.Component {
 
     setRegionAndNavigate(region) {
         NavigationService.navigate('Home', {
-            country: this.state.countriesArray.find(country => country.regions.find(regionPar => regionPar == region)),
+            country: this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)),
             region: region,
         });
     }
@@ -111,4 +110,10 @@ const DummyRightElement = styled.View`
   width: 0;
 `;
 
-export default SearchComponent;
+function mapStateToProps(state) {
+    return {
+        countryState: state.countryState
+    }
+}
+
+export default connect(mapStateToProps)(SearchComponent);

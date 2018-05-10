@@ -1,9 +1,11 @@
 import React from 'react';
-import {ScrollView, View, Picker, Text} from "react-native";
+import {ScrollView, View, Picker, Text, ActivityIndicator} from "react-native";
 import CommonPicker from "../../components/commonPicker/commonPicker";
 import RatingComponent from "../../components/ratingComponent/ratingComponent";
-import CountryService from "../../services/api/countryService";
 import styled from "styled-components";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {fetchCountries} from "../../actions/fetchCountries";
 
 class MainPartComponent extends React.Component {
     constructor(props) {
@@ -13,15 +15,23 @@ class MainPartComponent extends React.Component {
         const country = params ? params.country : undefined;
         this.state = {
             country: country,
-            countriesArray: undefined,
+            countries: undefined,
             region: region,
             regions: undefined
         };
-        this.initCountries();
     }
 
-    async initCountries() {
-        this.setState({countriesArray: await CountryService.getCountries()});
+    componentDidMount() {
+        if (this.props.countryState.countries.length === 0) {
+            this.props.fetchCountries();
+        }
+        this.setState({countries: this.props.countryState.countries});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.countries !== nextProps.countryState.countries) {
+            this.setState({countries: nextProps.countryState.countries});
+        }
     }
 
     updateCountry = (country) => {
@@ -41,6 +51,8 @@ class MainPartComponent extends React.Component {
     };
 
     render() {
+        const { isFetching } = this.props.countryState;
+
         let renderYearRatingContainer = this.state.region && this.state.region.years.map(year => {
             return (
                 <YearRatingContainer key={year.year}>
@@ -50,25 +62,33 @@ class MainPartComponent extends React.Component {
             );
         });
 
-        return(
-            <View>
-                <View>
-                    <CommonPicker placeholder={"Land auswählen"}
-                                  pickerData={this.state.countriesArray}
-                                  updateData={this.updateCountry}
-                                  item={this.state.country}
-                    />
-                    {this.state.country &&
-                    <CommonPicker ref={instance => {this.regionPicker = instance;}}
-                                  placeholder={"Region auswählen"}
-                                  pickerData={this.state.regions}
-                                  updateData={this.updateRegion}
-                                  item={this.state.region}
-                    />}
-                    <ScrollViewContainer>{renderYearRatingContainer}</ScrollViewContainer>
+        if (isFetching) {
+            return(
+                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size={'large'} />
                 </View>
-            </View>
-        );
+            )
+        } else {
+            return(
+                <View>
+                    <View>
+                        <CommonPicker placeholder={"Land auswählen"}
+                                      pickerData={this.state.countries}
+                                      updateData={this.updateCountry}
+                                      item={this.state.country}
+                        />
+                        {this.state.country &&
+                        <CommonPicker ref={instance => {this.regionPicker = instance;}}
+                                      placeholder={"Region auswählen"}
+                                      pickerData={this.state.regions}
+                                      updateData={this.updateRegion}
+                                      item={this.state.region}
+                        />}
+                        <ScrollViewContainer>{renderYearRatingContainer}</ScrollViewContainer>
+                    </View>
+                </View>
+            )
+        }
     }
 }
 
@@ -89,4 +109,16 @@ const ScrollViewContainer = styled.ScrollView`
   flex-basis: 75%;
 `;
 
-export default MainPartComponent;
+function mapStateToProps(state) {
+    return {
+        countryState: state.countryState
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        ...bindActionCreators({ fetchCountries }, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainPartComponent)
