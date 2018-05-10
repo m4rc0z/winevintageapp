@@ -4,6 +4,9 @@ import {Alert, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 
 import styled from "styled-components";
 import NavigationService from "../../services/navigation/NavigationService";
 import {connect} from "react-redux";
+import {setSelectedCountry} from "../../actions/country";
+import {setSelectedRegion} from "../../actions/region";
+import {bindActionCreators} from "redux";
 
 Array.prototype.flatMap = function(lambda) {
     return Array.prototype.concat.apply([], this.map(lambda));
@@ -38,10 +41,13 @@ class SearchComponent extends React.Component {
     }
 
     setRegionAndNavigate(region) {
-        NavigationService.navigate('Home', {
-            country: this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)),
-            region: region,
-        });
+        this.props.setSelectedCountry(this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)));
+        this.props.setSelectedRegion(region);
+        NavigationService.goBack();
+        // NavigationService.navigate('Home', {
+        //     country: this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)),
+        //     region: region,
+        // });
     }
 
     render() {
@@ -112,8 +118,16 @@ const DummyRightElement = styled.View`
 
 function mapStateToProps(state) {
     return {
-        countryState: state.countryState
+        countryState: state.countryState,
+        selectedCountryState: state.selectedCountryState,
+        selectedRegionState: state.selectedCountryState,
     }
 }
 
-export default connect(mapStateToProps)(SearchComponent);
+function mapDispatchToProps(dispatch) {
+    return {
+        ...bindActionCreators({ setSelectedCountry, setSelectedRegion }, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchComponent);

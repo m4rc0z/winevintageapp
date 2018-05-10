@@ -6,7 +6,7 @@ const initialState = {
     error: false
 };
 
-export default function countriesReducer(state = initialState, action) {
+export default function fetchCountriesReducer(state = initialState, action) {
 
     switch(action.type) {
         case FETCH_COUNTRIES:

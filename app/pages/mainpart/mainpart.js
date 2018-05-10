@@ -6,18 +6,17 @@ import styled from "styled-components";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {fetchCountries} from "../../actions/fetchCountries";
+import {setSelectedCountry} from "../../actions/country";
+import {setSelectedRegion} from "../../actions/region";
 
 class MainPartComponent extends React.Component {
     constructor(props) {
         super(props);
-        const { params } = this.props.navigation.state;
-        const region = params ? params.region : undefined;
-        const country = params ? params.country : undefined;
         this.state = {
-            country: country,
             countries: undefined,
-            region: region,
-            regions: undefined
+            regions: undefined,
+            selectedCountry: undefined,
+            selectedRegion: undefined,
         };
     }
 
@@ -25,39 +24,55 @@ class MainPartComponent extends React.Component {
         if (this.props.countryState.countries.length === 0) {
             this.props.fetchCountries();
         }
-        this.setState({countries: this.props.countryState.countries});
+        this.setState({
+            countries: this.props.countryState.countries,
+            selectedCountry: this.props.selectedCountryState.selectedCountry,
+            selectedRegion: this.props.selectedRegionState.selectedRegion,
+        });
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.state.countries !== nextProps.countryState.countries) {
             this.setState({countries: nextProps.countryState.countries});
         }
+        if (this.state.selectedCountry !== (nextProps.selectedCountryState && nextProps.selectedCountryState.selectedCountry)) {
+            this.setState({
+                selectedCountry: nextProps.selectedCountryState.selectedCountry,
+                regions: nextProps.selectedCountryState.selectedCountry.regions,
+            });
+        }
+
+        if (this.state.selectedRegion !== (nextProps.selectedRegionState && nextProps.selectedRegionState.selectedRegion)) {
+            this.setState({selectedRegion: nextProps.selectedRegionState.selectedRegion});
+        }
     }
 
     updateCountry = (country) => {
+        this.props.setSelectedCountry(country);
         this.setState({
-            country: country,
-            region: undefined,
-            regions: country && country.regions
+            selectedCountry: country,
+            selectedRegion: undefined,
+            regions: country && country.regions,
         });
         if (this.regionPicker) {
             this.regionPicker.clearTextSelect();
         }
     };
     updateRegion = (region) => {
+        this.props.setSelectedRegion(region);
         this.setState({
-            region: region
+            selectedRegion: region,
         });
     };
 
     render() {
         const { isFetching } = this.props.countryState;
 
-        let renderYearRatingContainer = this.state.region && this.state.region.years.map(year => {
+        let renderYearRatingContainer = this.state.selectedRegion && this.state.selectedRegion.years.map(year => {
             return (
                 <YearRatingContainer key={year.year}>
-                    {this.state.country && this.state.region && <YearContainer><Text>{year.year}</Text></YearContainer>}
-                    {this.state.country && this.state.region && <RatingContainer><RatingComponent ratingvalue={year.rating}/></RatingContainer>}
+                    {this.state.selectedCountry && this.state.selectedRegion && <YearContainer><Text>{year.year}</Text></YearContainer>}
+                    {this.state.selectedCountry && this.state.selectedRegion && <RatingContainer><RatingComponent ratingvalue={year.rating}/></RatingContainer>}
                 </YearRatingContainer>
             );
         });
@@ -75,14 +90,14 @@ class MainPartComponent extends React.Component {
                         <CommonPicker placeholder={"Land auswählen"}
                                       pickerData={this.state.countries}
                                       updateData={this.updateCountry}
-                                      item={this.state.country}
+                                      item={this.state.selectedCountry}
                         />
-                        {this.state.country &&
+                        {this.state.selectedCountry &&
                         <CommonPicker ref={instance => {this.regionPicker = instance;}}
                                       placeholder={"Region auswählen"}
                                       pickerData={this.state.regions}
                                       updateData={this.updateRegion}
-                                      item={this.state.region}
+                                      item={this.state.selectedRegion}
                         />}
                         <ScrollViewContainer>{renderYearRatingContainer}</ScrollViewContainer>
                     </View>
@@ -111,13 +126,15 @@ const ScrollViewContainer = styled.ScrollView`
 
 function mapStateToProps(state) {
     return {
-        countryState: state.countryState
+        countryState: state.countryState,
+        selectedCountryState: state.selectedCountryState,
+        selectedRegionState: state.selectedRegionState,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        ...bindActionCreators({ fetchCountries }, dispatch)
+        ...bindActionCreators({ fetchCountries, setSelectedCountry, setSelectedRegion }, dispatch)
     }
 }
 
