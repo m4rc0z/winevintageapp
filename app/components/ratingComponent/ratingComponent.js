@@ -6,7 +6,7 @@ class RatingComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rating: this.props.ratingvalue
+            rating: this.props.ratingvalue,
         };
     }
 
@@ -22,7 +22,6 @@ class RatingComponent extends React.Component {
         console.log("" + this.ratingElement);
         this.ratingElement.setCurrentRating(nextState.rating);
     }
-
 
     render() {
         return (

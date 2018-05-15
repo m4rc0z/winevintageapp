@@ -19,7 +19,7 @@ class HeaderComponent extends React.Component {
 }
 
 const HeaderContainer = styled.View`
-  background: blue;
+  background: ${props => props.theme.colors.navigationColor};
   padding-top: 25px;
   height: 60px;
 `;

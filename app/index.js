@@ -8,34 +8,46 @@ import SearchComponent from "./components/searchComponent/searchComponent";
 import NavigationService from "./services/navigation/NavigationService";
 import store from "./store";
 import {Provider} from "react-redux";
+import {ThemeProvider} from "styled-components";
 
 const TopLevelNavigator = createStackNavigator({
-    SplashScreen: { screen: Loader },
-    MainNavigator: { screen: MainPartComponent },
-    Search: { screen: createBottomTabNavigator({
-            SearchBar: { screen: SearchComponent },
-            Home: { screen: MainPartComponent },
-})},
+    SplashScreen: {screen: Loader},
+    MainNavigator: {screen: MainPartComponent},
+    Search: {
+        screen: createBottomTabNavigator({
+            SearchBar: {screen: SearchComponent},
+            Home: {screen: MainPartComponent},
+        })
+    },
 }, {
     headerMode: 'screen',
-    cardStyle: { backgroundColor: 'white'},
+    cardStyle: {backgroundColor: 'white'},
     navigationOptions: {
-        header: <HeaderComponent />
+        header: <HeaderComponent/>
     }
 });
 
 class App extends React.Component {
     render() {
         return (
-            <Provider store={store}>
-                <TopLevelNavigator
-                    ref={navigatorRef => {
-                        NavigationService.setTopLevelNavigator(navigatorRef)
-                    }}/>
-            </Provider>
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <TopLevelNavigator
+                        ref={navigatorRef => {
+                            NavigationService.setTopLevelNavigator(navigatorRef)
+                        }}/>
+                </Provider>
+            </ThemeProvider>
         )
     };
 }
 
+const theme = {
+    colors: {
+        navigationColor: '#733626',
+        backgroundColor: '#FFFFFF',
+        textColor: '#2B2C28',
+    }
+};
 
 export default App;

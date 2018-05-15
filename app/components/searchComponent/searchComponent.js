@@ -44,10 +44,6 @@ class SearchComponent extends React.Component {
         this.props.setSelectedCountry(this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)));
         this.props.setSelectedRegion(region);
         NavigationService.goBack();
-        // NavigationService.navigate('Home', {
-        //     country: this.state.countries.find(country => country.regions.find(regionPar => regionPar == region)),
-        //     region: region,
-        // });
     }
 
     render() {
@@ -92,13 +88,13 @@ const DismissKeyboard = ({children}) => (
 
 const styles = StyleSheet.create({
     searchBar: {
-        backgroundColor: 'blue',
+        backgroundColor: '#733626',
         borderTopWidth: 0,
         borderBottomWidth: 0,
         height: 40,
     },
     searchInput: {
-        backgroundColor: 'blue',
+        backgroundColor: '#733626',
         borderWidth: 0,
     }
 });
@@ -109,7 +105,7 @@ const SearchBarContainer = styled.View`
 const SearchResultContainer = styled.View`
   height: 100%;
   width: 100%;
-  background-color: white;
+  background-color: ${props => props.theme.colors.backgroundColor};
 `;
 const DummyRightElement = styled.View`
   height: 0;
